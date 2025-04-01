@@ -1,54 +1,88 @@
-# React + TypeScript + Vite
+# বাংলাকোড
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+বাংলাকোড is a programming language that uses Bangla syntax. It's designed to make programming more accessible and easier to learn for Bangla speakers.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Bangla syntax
+- Mimics C syntax and structure
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+To start using বাংলাকোড, follow these steps:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1.  Write your code in Bangla using the specified syntax.
+2.  Use the online interpreter to run your code.
+
+## Syntax
+
+### Basic Structure
+
+A basic বাংলাকোড program starts with the `#অন্তর্ভুক্ত <স্তদিও.হ>` directive (similar to C's `#include <stdio.h>`) and the `পূর্ণ প্রধান()` function (similar to C's `int main()`).
+
+### Variables
+
+Declare variables using `পূর্ণ` for integers (like `int`) and `দশমিক` for floating-point numbers (like `float`).
+
+Example:
+```c
+পূর্ণ ক = ১০; // int a = 10;
+দশমিক খ = ৩.৫; // float b = 3.5;
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Functions
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Use predefined functions for basic operations:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+-   `যোগ(ক, খ)`: Addition (like `a + b`)
+-   `বিয়োগ(ক, খ)`: Subtraction (like `a - b`)
+-   `গুণ(ক, খ)`: Multiplication (like `a * b`)
+-   `ভাগ(ক, গ)`: Division (like `a / c`)
+-   `বর্গমূল(ক)`: Square root (like `sqrt(a)`)
+
+### Output
+
+Use the `ছাপাওফ()` function to display output (similar to C's `printf()`). You can print strings or variables.
+
+Example:
+```c
+ছাপাওফ("গণনা শুরু!\\n"); // printf("Calculation started!\\n");
+ছাপাওফ(ক); // printf(a);
 ```
+
+## Example Code
+```c
+#অন্তর্ভুক্ত <স্তদিও.হ>
+
+পূর্ণ প্রধান() {
+    ছাপাওফ("গণনা শুরু!\\n");
+    পূর্ণ ক = ১০;
+    পূর্ণ খ = ৫;
+    দশমিক গ = ৩.৫;
+    পূর্ণ ঘ = যোগ(ক, খ);
+    ছাপাওফ("যোগ: ");
+    ছাপাওফ(ঘ);
+    ছাপাওফ("\\n");
+    পূর্ণ ঙ = বিয়োগ(ক, খ);
+    ছাপাওফ("বিয়োগ: ");
+    ছাপাওফ(ঙ);
+    ছাপাওফ("\\n");
+    দশমিক চ = গুণ(গ, খ);
+    ছাপাওফ("গুণ: ");
+    ছাপাওফ(চ);
+    ছাপাওফ("\\n");
+    দশমিক ছ = ভাগ(ক, গ);
+    ছাপাওফ("ভাগ: ");
+    ছাপাওফ(ছ);
+    ছাপাওফ("\\n");
+    দশমিক জ = বর্গমূল(ক);
+    ছাপাওফ("বর্গমূল: ");
+    ছাপাওফ(জ);
+    ছাপাওফ("\\n");
+    ফেরত ০;
+}
+```
+
+## Contributing
+
+Feel free to contribute to বাংলাকোড by submitting issues and pull requests.
