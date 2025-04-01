@@ -1,7 +1,7 @@
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
 
 interface Variables {
-  [key: string]: number;
+  [key: string]: number | string;
 }
 
 const defaultCode = `#অন্তর্ভুক্ত <স্তদিও.হ>
@@ -65,7 +65,17 @@ export default function CodeEditor() {
     let inMain = false;
     let returnFound = false;
 
-    for (const line of lines) {
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Check for semicolon in statements that require it
+      if (inMain && line && !line.endsWith('{') && !line.endsWith('}') && 
+          !line.includes('প্রধান()') && !line.includes('ফেরত ০') &&
+          !line.endsWith(';') && line !== '') {
+        setOutput(`ত্রুটি: লাইন ${i + 1} এ সেমিকোলন (;) অনুপস্থিত`);
+        return;
+      }
+
       if (line.includes('প্রধান()')) {
         inMain = true;
         continue;
@@ -79,7 +89,12 @@ export default function CodeEditor() {
         } else {
           const varMatch = line.match(/ছাপাওফ\(([^\)]+)\)/);
           if (varMatch && variables[varMatch[1]] !== undefined) {
-            outputText += convertEnglishToBanglaNumber(variables[varMatch[1]]);
+            let outputValue = variables[varMatch[1]];
+            if (outputValue === "নান") {
+              outputText += outputValue;
+            } else {
+              outputText += convertEnglishToBanglaNumber(outputValue);
+            }
           }
         }
       }
@@ -104,7 +119,7 @@ export default function CodeEditor() {
           const var1 = match[1].trim();
           const var2 = match[2].trim();
           const resultVar = line.split('=')[0].replace(/পূর্ণ|দশমিক/, '').trim();
-          variables[resultVar] = variables[var1] + variables[var2];
+          variables[resultVar] = Number(variables[var1]) + Number(variables[var2]);
         }
       }
 
@@ -114,7 +129,7 @@ export default function CodeEditor() {
           const var1 = match[1].trim();
           const var2 = match[2].trim();
           const resultVar = line.split('=')[0].replace(/পূর্ণ|দশমিক/, '').trim();
-          variables[resultVar] = variables[var1] - variables[var2];
+          variables[resultVar] = Number(variables[var1]) - Number(variables[var2]);
         }
       }
 
@@ -124,7 +139,7 @@ export default function CodeEditor() {
           const var1 = match[1].trim();
           const var2 = match[2].trim();
           const resultVar = line.split('=')[0].replace(/পূর্ণ|দশমিক/, '').trim();
-          variables[resultVar] = variables[var1] * variables[var2];
+          variables[resultVar] = Number(variables[var1]) * Number(variables[var2]);
         }
       }
 
@@ -134,7 +149,7 @@ export default function CodeEditor() {
           const var1 = match[1].trim();
           const var2 = match[2].trim();
           const resultVar = line.split('=')[0].replace(/পূর্ণ|দশমিক/, '').trim();
-          variables[resultVar] = variables[var1] / variables[var2];
+          variables[resultVar] = Number(variables[var1]) / Number(variables[var2]);
         }
       }
 
@@ -143,7 +158,12 @@ export default function CodeEditor() {
         if (match) {
           const var1 = match[1].trim();
           const resultVar = line.split('=')[0].replace(/পূর্ণ|দশমিক/, '').trim();
-          variables[resultVar] = Math.sqrt(variables[var1]);
+          const result = Math.sqrt(Number(variables[var1]));
+          if (isNaN(result)) {
+            variables[resultVar] = "নান";
+          } else {
+            variables[resultVar] = result;
+          }
         }
       }
 
@@ -158,6 +178,10 @@ export default function CodeEditor() {
       return;
     }
 
+    if (outputText.includes('NaN')) {
+      outputText = outputText.replace(/NaN/g, 'নান');
+    }
+
     setOutput(outputText || 'কোনো আউটপুট নেই বা কোডে ত্রুটি আছে।');
   };
 
@@ -168,11 +192,9 @@ export default function CodeEditor() {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
 
-      // Insert 4 spaces at cursor position
       const newCode = code.substring(0, start) + '    ' + code.substring(end);
       setCode(newCode);
 
-      // Set cursor position after the inserted spaces
       setTimeout(() => {
         textarea.selectionStart = textarea.selectionEnd = start + 4;
       }, 0);
