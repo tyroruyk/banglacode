@@ -76,3 +76,20 @@ button:hover {
   padding: 20px;
   /* Add any specific styling for the tab content area */
 }
+
+.credit {
+  font-size: 0.8em;
+  color: #777;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.credit a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.credit a:hover {
+  text-decoration: underline;
+}
+

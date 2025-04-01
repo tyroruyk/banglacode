@@ -26,6 +26,7 @@ function App() {
         {activeTab === 'editor' && <CodeEditor />}
         {activeTab === 'docs' && <Docs />}
       </div>
+      <p className="credit">- by <a href="https://github.com/tyroruyk" target='_blank'>@tyroruyk</a></p>
     </div>
   );
 }
