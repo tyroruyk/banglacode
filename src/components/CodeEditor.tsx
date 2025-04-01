@@ -63,8 +63,9 @@ export default function CodeEditor() {
     const variables: Variables = {};
     const lines = code.split('\n').map(line => line.trim());
     let inMain = false;
+    let returnFound = false;
 
-    for (let line of lines) {
+    for (const line of lines) {
       if (line.includes('প্রধান()')) {
         inMain = true;
         continue;
@@ -146,7 +147,15 @@ export default function CodeEditor() {
         }
       }
 
-      if (line.includes('ফেরত ০')) break;
+      if (line.includes('ফেরত ০')) {
+        returnFound = true;
+        break;
+      }
+    }
+
+    if (inMain && !returnFound) {
+      setOutput('ত্রুটি: "ফেরত ০;" প্রধান() ফাংশনে অনুপস্থিত।');
+      return;
     }
 
     setOutput(outputText || 'কোনো আউটপুট নেই বা কোডে ত্রুটি আছে।');
