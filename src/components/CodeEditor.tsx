@@ -66,6 +66,15 @@ export default function CodeEditor() {
     let inMain = false;
     let returnFound = false;
 
+    // Check if '#অন্তর্ভুক্ত <স্তদিও.হ>' exists before 'পূর্ণ প্রধান()'
+    const includeIndex = lines.findIndex(line => line.includes('#অন্তর্ভুক্ত <স্তদিও.হ>'));
+    const mainIndex = lines.findIndex(line => line.includes('পূর্ণ প্রধান()'));
+
+    if (includeIndex === -1 || (mainIndex !== -1 && includeIndex > mainIndex)) {
+      setOutput('ত্রুটি: "#অন্তর্ভুক্ত <স্তদিও.হ>" অবশ্যই "পূর্ণ প্রধান()" ফাংশনের আগে থাকতে হবে।');
+      return;
+    }
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       
