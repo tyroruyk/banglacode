@@ -86,11 +86,12 @@ export default function CodeEditor() {
       if (line.includes('ছাপাওফ')) {
         const match = line.match(/"([^"]*)"/);
         if (match) {
-          outputText += match[1].replace('\\ন', '\n');
+          // Replace all instances of \\ন with actual newlines
+          outputText += match[1].replace(/\\ন/g, '\n');
         } else {
           const varMatch = line.match(/ছাপাওফ\(([^\)]+)\)/);
           if (varMatch && variables[varMatch[1]] !== undefined) {
-            let outputValue = variables[varMatch[1]];
+            const outputValue = variables[varMatch[1]];
             if (outputValue === "নান") {
               outputText += outputValue;
             } else {
