@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useState } from 'react';
 
 interface Variables {
   [key: string]: number | string;
@@ -203,6 +203,27 @@ export default function CodeEditor() {
     }
   };
 
+  const shareCode = useCallback(() => {
+    const encodedCode = encodeURIComponent(code);
+    const shareURL = `${window.location.origin}${window.location.pathname}?q=${encodedCode}`;
+    navigator.clipboard.writeText(shareURL)
+      .then(() => {
+        alert('লিঙ্কটি ক্লিপবোর্ডে কপি করা হয়েছে!');
+      })
+      .catch(err => {
+        console.error('ক্লিপবোর্ডে কপি করতে সমস্যা:', err);
+        alert('লিঙ্কটি কপি করতে সমস্যা হয়েছে।');
+      });
+  }, [code]);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeFromURL = urlParams.get('q');
+    if (codeFromURL) {
+      setCode(decodeURIComponent(codeFromURL));
+    }
+  }, []);
+
   return (
     <div className="container">
       <textarea
@@ -212,7 +233,10 @@ export default function CodeEditor() {
         onKeyDown={handleKeyDown}
         placeholder="এখানে আপনার বাংলাকোড লিখুন..."
       />
-      <button onClick={runCode}>কোড চালান</button>
+      <div className="button-container">
+        <button onClick={runCode}>কোড চালান</button>
+        <button onClick={shareCode}>কোড শেয়ার করুন</button>
+      </div>
       <div id="output">{output}</div>
     </div>
   );

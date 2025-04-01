@@ -93,3 +93,21 @@ button:hover {
   text-decoration: underline;
 }
 
+.button-container {
+  display: flex;
+  flex-direction: column; /* Stack buttons on smaller screens */
+  gap: 10px; /* Add some space between the buttons */
+}
+
+/* Media query for larger screens */
+@media (min-width: 768px) {
+  .button-container {
+    flex-direction: row; /* Display buttons in a row */
+  }
+
+  .button-container button {
+    flex: 1; /* Each button takes up equal space */
+    margin: 0; /* Remove any margins that might interfere with the layout */
+  }
+}
+
