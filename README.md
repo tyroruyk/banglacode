@@ -22,12 +22,13 @@ A basic বাংলাকোড program starts with the `#অন্তর্ভ
 
 ### Variables
 
-Declare variables using `পূর্ণ` for integers (like `int`) and `দশমিক` for floating-point numbers (like `float`).
+Declare variables using `পূর্ণ` for integers (like `int`), `দশমিক` for floating-point numbers (like `float`), and `সুতা` for strings (like `char*`).
 
 Example:
 ```c
 পূর্ণ ক = ১০; // int a = 10;
 দশমিক খ = ৩.৫; // float b = 3.5;
+সুতা নাম = "বাংলা কোড"; // char* name = "Bangla Code";
 ```
 
 ### Functions
@@ -55,6 +56,10 @@ Example:
 #অন্তর্ভুক্ত <স্তদিও.হ>
 
 পূর্ণ প্রধান() {
+    সুতা নাম = "বাংলা কোড";
+    ছাপাওফ("স্বাগতম ");
+    ছাপাওফ(নাম);
+    ছাপাওফ("!\\n");
     ছাপাওফ("গণনা শুরু!\\n");
     পূর্ণ ক = ১০;
     পূর্ণ খ = ৫;

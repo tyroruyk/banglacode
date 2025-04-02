@@ -7,7 +7,8 @@ interface Variables {
 const defaultCode = `#অন্তর্ভুক্ত <স্তদিও.হ>
 
 পূর্ণ প্রধান() {
-    ছাপাওফ("ওহে, বিশ্ব!\\ন");
+    সুতা নাম = "বাংলা কোড";
+    ছাপাওফ(নাম);
     
     ফেরত ০;
 }`;
@@ -98,6 +99,17 @@ export default function CodeEditor() {
       }
       if (!inMain) continue;
 
+      if (line.includes('সুতা') && line.includes('=')) {
+        const parts = line.split('=');
+        const varName = parts[0].replace('সুতা', '').trim();
+        const valueMatch = parts[1].match(/"([^"]*)"/);
+        let value = '';
+        if (valueMatch) {
+          value = valueMatch[1];
+        }
+        variables[varName] = value;
+      }
+
       if (line.includes('ছাপাওফ')) {
         const match = line.match(/"([^"]*)"/);
         if (match) {
@@ -106,8 +118,8 @@ export default function CodeEditor() {
           const varMatch = line.match(/ছাপাওফ\(([^)]+)\)/);
           if (varMatch && variables[varMatch[1]] !== undefined) {
             const outputValue = variables[varMatch[1]];
-            if (outputValue === "নান") {
-              outputText += outputValue;
+            if (typeof outputValue === 'string') {
+              outputText += outputValue.replace(/\\ন/g, '\n');
             } else {
               outputText += convertEnglishToBanglaNumber(outputValue);
             }
