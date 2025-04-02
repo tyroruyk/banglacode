@@ -75,6 +75,35 @@ export default function CodeEditor() {
       return;
     }
 
+    // Add check for proper main function syntax with curly braces
+    const mainFunctionLine = lines.find(line => line.includes('প্রধান()'));
+    if (!mainFunctionLine || !mainFunctionLine.startsWith('পূর্ণ প্রধান()')) {
+      setOutput('ত্রুটি: মূল ফাংশনের সিনট্যাক্স অবশ্যই "পূর্ণ প্রধান() {...}" হতে হবে।');
+      return;
+    }
+
+    // Check for opening curly brace
+    const mainLineIndex = lines.findIndex(line => line.includes('প্রধান()'));
+    if (mainLineIndex === -1 || !lines[mainLineIndex].includes('{')) {
+      setOutput('ত্রুটি: প্রধান() ফাংশনে শুরুর কার্লি ব্রেস "{" অনুপস্থিত।');
+      return;
+    }
+
+    // Check for matching closing brace
+    let braceCount = 0;
+    for (let i = mainLineIndex; i < lines.length; i++) {
+      if (lines[i].includes('{')) braceCount++;
+      if (lines[i].includes('}')) braceCount--;
+      if (braceCount === 0 && i > mainLineIndex) {
+        // Found matching closing brace
+        break;
+      }
+    }
+    if (braceCount !== 0) {
+      setOutput('ত্রুটি: প্রধান() ফাংশনে শেষের কার্লি ব্রেস "}" অনুপস্থিত।');
+      return;
+    }
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       
@@ -95,10 +124,9 @@ export default function CodeEditor() {
       if (line.includes('ছাপাওফ')) {
         const match = line.match(/"([^"]*)"/);
         if (match) {
-          // Replace all instances of \\ন with actual newlines
           outputText += match[1].replace(/\\ন/g, '\n');
         } else {
-          const varMatch = line.match(/ছাপাওফ\(([^\)]+)\)/);
+          const varMatch = line.match(/ছাপাওফ\(([^)]+)\)/);
           if (varMatch && variables[varMatch[1]] !== undefined) {
             const outputValue = variables[varMatch[1]];
             if (outputValue === "নান") {
