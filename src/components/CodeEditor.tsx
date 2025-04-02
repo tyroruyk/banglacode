@@ -13,134 +13,138 @@ const defaultCode = `#অন্তর্ভুক্ত <স্তদিও.হ>
     ফেরত ০;
 }`;
 
+const banglaToEnglishMap: { [key: string]: string } = {
+  '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4', '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9'
+};
+
+const englishToBanglaMap: { [key: string]: string } = {
+  '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'
+};
+
+const convertBanglaToEnglishNumber = (banglaNum: string): string =>
+  banglaNum
+    .split('')
+    .map(ch => banglaToEnglishMap[ch] || ch)
+    .join('');
+
+const convertEnglishToBanglaNumber = (englishNum: string | number): string =>
+  String(englishNum)
+    .split('')
+    .map(ch => englishToBanglaMap[ch] || ch)
+    .join('');
+
+// Helper to handle numeric variable assignments
+const assignNumericVariable = (
+  line: string,
+  keyword: string,
+  parser: (value: string) => number,
+  variables: Variables
+) => {
+  if (line.includes(keyword) && line.includes('=')) {
+    const parts = line.split('=');
+    const varName = parts[0].replace(keyword, '').trim();
+    const rawValue = parts[1].replace(';', '').trim();
+    const value = parser(convertBanglaToEnglishNumber(rawValue));
+    variables[varName] = value;
+  }
+};
+
 export default function CodeEditor() {
   const [code, setCode] = useState(defaultCode);
   const [output, setOutput] = useState('আউটপুট এখানে দেখাবে...');
-
-  const convertBanglaToEnglishNumber = (banglaNum: string): string => {
-    const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-    const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    let result = banglaNum;
-    for (let i = 0; i < banglaDigits.length; i++) {
-      result = result.replace(new RegExp(banglaDigits[i], 'g'), englishDigits[i]);
-    }
-    return result;
-  };
-
-  const convertEnglishToBanglaNumber = (englishNum: string | number): string => {
-    const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-    const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    let result = String(englishNum);
-    for (let i = 0; i < englishDigits.length; i++) {
-      result = result.replace(new RegExp(englishDigits[i], 'g'), banglaDigits[i]);
-    }
-    return result;
-  };
 
   const runCode = () => {
     let outputText = '';
     const variables: Variables = {};
     const lines = code.split('\n').map(line => line.trim());
-    let inMain = false;
+    let isInMain = false;
     let returnFound = false;
 
-    // Check if '#অন্তর্ভুক্ত <স্তদিও.হ>' exists before 'পূর্ণ প্রধান()'
+    // Check for required include before main
     const includeIndex = lines.findIndex(line => line.includes('#অন্তর্ভুক্ত <স্তদিও.হ>'));
     const mainIndex = lines.findIndex(line => line.includes('পূর্ণ প্রধান()'));
-
     if (includeIndex === -1 || (mainIndex !== -1 && includeIndex > mainIndex)) {
       setOutput('ত্রুটি: "#অন্তর্ভুক্ত <স্তদিও.হ>" অবশ্যই "পূর্ণ প্রধান()" ফাংশনের আগে থাকতে হবে।');
       return;
     }
 
-    // Add check for proper main function syntax with curly braces
+    // Validate main function syntax (must start with 'পূর্ণ প্রধান()' and include an opening brace)
     const mainFunctionLine = lines.find(line => line.includes('প্রধান()'));
-    if (!mainFunctionLine || !mainFunctionLine.startsWith('পূর্ণ প্রধান()')) {
-      setOutput('ত্রুটি: মূল ফাংশনের সিনট্যাক্স অবশ্যই "পূর্ণ প্রধান() {...}" হতে হবে।');
+    if (!mainFunctionLine || !mainFunctionLine.startsWith('পূর্ণ প্রধান()') || !mainFunctionLine.includes('{')) {
+      setOutput('ত্রুটি: মূল ফাংশনের সিনট্যাক্স অবশ্যই "পূর্ণ প্রধান() {...}" হতে হবে এবং শুরুতে "{" থাকতে হবে।');
       return;
     }
 
-    // Check for opening curly brace
-    const mainLineIndex = lines.findIndex(line => line.includes('প্রধান()'));
-    if (mainLineIndex === -1 || !lines[mainLineIndex].includes('{')) {
-      setOutput('ত্রুটি: প্রধান() ফাংশনে শুরুর কার্লি ব্রেস "{" অনুপস্থিত।');
-      return;
-    }
-
-    // Check for matching closing brace
+    // Check for matching curly braces in the main function
     let braceCount = 0;
+    const mainLineIndex = lines.findIndex(line => line.includes('প্রধান()'));
     for (let i = mainLineIndex; i < lines.length; i++) {
       if (lines[i].includes('{')) braceCount++;
       if (lines[i].includes('}')) braceCount--;
-      if (braceCount === 0 && i > mainLineIndex) {
-        // Found matching closing brace
-        break;
-      }
+      if (braceCount === 0 && i > mainLineIndex) break;
     }
     if (braceCount !== 0) {
       setOutput('ত্রুটি: প্রধান() ফাংশনে শেষের কার্লি ব্রেস "}" অনুপস্থিত।');
       return;
     }
 
+    // Process each line of code
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      
-      // Check for semicolon in statements that require it
-      if (inMain && line && !line.endsWith('{') && !line.endsWith('}') && 
-          !line.includes('প্রধান()') && !line.includes('ফেরত ০') &&
-          !line.endsWith(';') && line !== '') {
+
+      // Enforce semicolon for statements (ignoring blocks and certain keywords)
+      if (
+        isInMain &&
+        line &&
+        !line.endsWith('{') &&
+        !line.endsWith('}') &&
+        !line.includes('প্রধান()') &&
+        // !line.includes('ফেরত ০') &&
+        !line.endsWith(';') &&
+        line !== ''
+      ) {
         setOutput(`ত্রুটি: লাইন ${i + 1} এ সেমিকোলন (;) অনুপস্থিত`);
         return;
       }
 
+      // Detect start of main function
       if (line.includes('প্রধান()')) {
-        inMain = true;
+        isInMain = true;
         continue;
       }
-      if (!inMain) continue;
+      if (!isInMain) continue;
 
+      // Process string assignment with "সুতা"
       if (line.includes('সুতা') && line.includes('=')) {
         const parts = line.split('=');
         const varName = parts[0].replace('সুতা', '').trim();
         const valueMatch = parts[1].match(/"([^"]*)"/);
-        let value = '';
         if (valueMatch) {
-          value = valueMatch[1];
+          variables[varName] = valueMatch[1];
         }
-        variables[varName] = value;
       }
 
+      // Process print statement with "ছাপাওফ"
       if (line.includes('ছাপাওফ')) {
-        const match = line.match(/"([^"]*)"/);
-        if (match) {
-          outputText += match[1].replace(/\\ন/g, '\n');
+        const textMatch = line.match(/"([^"]*)"/);
+        if (textMatch) {
+          outputText += textMatch[1].replace(/\\ন/g, '\n');
         } else {
           const varMatch = line.match(/ছাপাওফ\(([^)]+)\)/);
-          if (varMatch && variables[varMatch[1]] !== undefined) {
-            const outputValue = variables[varMatch[1]];
-            if (typeof outputValue === 'string') {
-              outputText += outputValue.replace(/\\ন/g, '\n');
-            } else {
-              outputText += convertEnglishToBanglaNumber(outputValue);
-            }
+          if (varMatch && variables[varMatch[1].trim()] !== undefined) {
+            const outputValue = variables[varMatch[1].trim()];
+            outputText += typeof outputValue === 'string'
+              ? outputValue.replace(/\\ন/g, '\n')
+              : convertEnglishToBanglaNumber(outputValue);
           }
         }
       }
 
-      if (line.includes('পূর্ণ') && line.includes('=')) {
-        const parts = line.split('=');
-        const varName = parts[0].replace('পূর্ণ', '').trim();
-        const value = parseInt(convertBanglaToEnglishNumber(parts[1].replace(';', '').trim()));
-        variables[varName] = value;
-      }
+      // Process numeric assignments for integers and decimals
+      assignNumericVariable(line, 'পূর্ণ', parseInt, variables);
+      assignNumericVariable(line, 'দশমিক', parseFloat, variables);
 
-      if (line.includes('দশমিক') && line.includes('=')) {
-        const parts = line.split('=');
-        const varName = parts[0].replace('দশমিক', '').trim();
-        const value = parseFloat(convertBanglaToEnglishNumber(parts[1].replace(';', '').trim()));
-        variables[varName] = value;
-      }
-
+      // Process arithmetic operations using a helper pattern
       if (line.includes('যোগ')) {
         const match = line.match(/যোগ\(([^,]+),\s*([^)]+)\)/);
         if (match) {
@@ -187,11 +191,7 @@ export default function CodeEditor() {
           const var1 = match[1].trim();
           const resultVar = line.split('=')[0].replace(/পূর্ণ|দশমিক/, '').trim();
           const result = Math.sqrt(Number(variables[var1]));
-          if (isNaN(result)) {
-            variables[resultVar] = "নান";
-          } else {
-            variables[resultVar] = result;
-          }
+          variables[resultVar] = isNaN(result) ? "নান" : result;
         }
       }
 
@@ -201,11 +201,12 @@ export default function CodeEditor() {
       }
     }
 
-    if (inMain && !returnFound) {
+    if (isInMain && !returnFound) {
       setOutput('ত্রুটি: "ফেরত ০;" প্রধান() ফাংশনে অনুপস্থিত।');
       return;
     }
 
+    // Replace any "NaN" occurrences in the output text with the Bengali version
     if (outputText.includes('NaN')) {
       outputText = outputText.replace(/NaN/g, 'নান');
     }
@@ -213,22 +214,22 @@ export default function CodeEditor() {
     setOutput(outputText || 'কোনো আউটপুট নেই বা কোডে ত্রুটি আছে।');
   };
 
+  // Handle tab key insertion in textarea
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Tab') {
       e.preventDefault();
       const textarea = e.target as HTMLTextAreaElement;
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
-
       const newCode = code.substring(0, start) + '    ' + code.substring(end);
       setCode(newCode);
-
       setTimeout(() => {
         textarea.selectionStart = textarea.selectionEnd = start + 4;
       }, 0);
     }
   };
 
+  // Share code by encoding the current editor contents into the URL
   const shareCode = useCallback(() => {
     const encodedCode = encodeURIComponent(code);
     const shareURL = `${window.location.origin}${window.location.pathname}?q=${encodedCode}`;
@@ -242,6 +243,7 @@ export default function CodeEditor() {
       });
   }, [code]);
 
+  // Load code from URL parameter if available
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const codeFromURL = urlParams.get('q');
