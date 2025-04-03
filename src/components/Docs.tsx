@@ -1,37 +1,35 @@
-const Docs = () => {
+import { translations } from '../translations';
+
+interface DocsProps {
+  language: 'bn' | 'en';
+}
+
+const Docs = ({ language }: DocsProps) => {
+  const content = translations[language];
+
   return (
     <div className="docs">
-      <h2>বাংলাকোড ডকুমেন্টেশন</h2>
-      <p>
-        বাংলাকোড একটি প্রোগ্রামিং ভাষা যা বাংলা সিনট্যাক্স ব্যবহার করে। এটি বাংলা ভাষাভাষীদের জন্য প্রোগ্রামিংকে আরও সহজলভ্য এবং শেখার জন্য ডিজাইন করা হয়েছে।
-      </p>
-      <h3>বৈশিষ্ট্য</h3>
+      <h2>{content.title}</h2>
+      <p>{content.intro}</p>
+      <h3>{content.features}</h3>
       <ul>
-        <li>বাংলা সিনট্যাক্স</li>
-        <li>সি সিনট্যাক্স এবং কাঠামোর অনুরূপ</li>
+        {content.featuresList.map((feature, index) => (
+          <li key={index}>{feature}</li>
+        ))}
       </ul>
-      <h3>শুরু করা যাক</h3>
-      <p>
-        বাংলাকোড ব্যবহার শুরু করার জন্য, এই ধাপগুলি অনুসরণ করুন:
-      </p>
+      <h3>{content.gettingStarted}</h3>
+      <p>{content.gettingStartedSteps[0]}</p>
       <ol>
-        <li>
-          বাংলাকোড সিনট্যাক্স ব্যবহার করে আপনার কোড লিখুন।
-        </li>
-        <li>
-          আপনার কোড রান করার জন্য অনলাইন ইন্টারপ্রেটার ব্যবহার করুন।
-        </li>
+        {content.gettingStartedSteps.map((step, index) => (
+          <li key={index}>{step}</li>
+        ))}
       </ol>
-      <h3>সিনট্যাক্স</h3>
-      <h4>বেসিক কাঠামো</h4>
-      <p>
-        একটি বেসিক বাংলাকোড প্রোগ্রাম <code>#অন্তর্ভুক্ত &lt;স্তদিও.হ&gt;</code> ডিরেক্টিভ (C এর <code>#include &lt;stdio.h&gt;</code> এর মতো) এবং <code>পূর্ণ প্রধান()</code> ফাংশন (C এর <code>int main()</code> এর মতো) দিয়ে শুরু হয়।
-      </p>
-      <h4>ভেরিয়েবল</h4>
-      <p>
-        ভেরিয়েবল ঘোষণা করার জন্য <code>পূর্ণ</code> (<code>int</code> এর মতো), <code>দশমিক</code> (<code>float</code> এর মতো), এবং <code>সুতা</code> (<code>char*</code> এর মতো) ব্যবহার করুন।
-      </p>
-      <p>উদাহরণ:</p>
+      <h3>{content.syntax}</h3>
+      <h4>{content.basicStructure}</h4>
+      <p>{content.basicStructureDesc}</p>
+      <h4>{content.variables}</h4>
+      <p>{content.variablesDesc}</p>
+      <p>Example:</p>
       <pre>
         <code>
           {`পূর্ণ ক = ১০; // int a = 10;
@@ -39,29 +37,25 @@ const Docs = () => {
 সুতা নাম = "বাংলা কোড"; // char* name = "Bangla Code";`}
         </code>
       </pre>
-      <h4>ফাংশন</h4>
-      <p>
-        বেসিক অপারেশনের জন্য পূর্বে সংজ্ঞায়িত ফাংশন ব্যবহার করুন:
-      </p>
+      <h4>{content.functions}</h4>
+      <p>{content.functionsDesc}</p>
       <ul>
-        <li><code>যোগ(ক, খ)</code>: যোগ (<code>a + b</code> এর মতো)</li>
-        <li><code>বিয়োগ(ক, খ)</code>: বিয়োগ (<code>a - b</code> এর মতো)</li>
-        <li><code>গুণ(ক, খ)</code>: গুণ (<code>a * b</code> এর মতো)</li>
-        <li><code>ভাগ(ক, গ)</code>: ভাগ (<code>a / c</code> এর মতো)</li>
-        <li><code>বর্গমূল(ক)</code>: বর্গমূল (<code>sqrt(a)</code> এর মতো)</li>
+        {content.functionsList.map((func, index) => (
+          <li key={index}>
+            <code>{func.name}</code>: {func.desc}
+          </li>
+        ))}
       </ul>
-      <h4>আউটপুট</h4>
-      <p>
-        আউটপুট দেখানোর জন্য <code>ছাপাওফ()</code> ফাংশন ব্যবহার করুন (C এর <code>printf()</code> এর মতো)। আপনি স্ট্রিং অথবা ভেরিয়েবল প্রিন্ট করতে পারেন।
-      </p>
-      <p>উদাহরণ:</p>
+      <h4>{content.output}</h4>
+      <p>{content.outputDesc}</p>
+      <p>Example:</p>
       <pre>
         <code>
           {`ছাপাওফ("গণনা শুরু!\\n"); // printf("Calculation started!\\n");
 ছাপাওফ(ক); // printf(a);`}
         </code>
       </pre>
-      <h3>উদাহরণ কোড</h3>
+      <h3>{content.example}</h3>
       <pre>
         <code>
           {`#অন্তর্ভুক্ত <স্তদিও.হ>

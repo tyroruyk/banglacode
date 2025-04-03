@@ -52,22 +52,26 @@ button:hover {
 
 .tabs {
   display: flex;
-  width: 100%; /* Same width as the code editor */
+  width: 100%;
+  /* Same width as the code editor */
 }
 
 .tabs button {
-  flex: 1; /* Each tab takes up 50% of the space */
+  flex: 1;
+  /* Each tab takes up 50% of the space */
   padding: 10px 20px;
   font-size: 16px;
   background-color: #f0f0f0;
   color: #333;
   border: 1px solid #ccc;
-  border-bottom: none; /* Remove bottom border to connect with content */
+  border-bottom: none;
+  /* Remove bottom border to connect with content */
   cursor: pointer;
 }
 
 .tabs button.active {
-  background-color: #fff; /* Highlight the active tab */
+  background-color: #fff;
+  /* Highlight the active tab */
   color: #000;
 }
 
@@ -95,19 +99,45 @@ button:hover {
 
 .button-container {
   display: flex;
-  flex-direction: column; /* Stack buttons on smaller screens */
-  gap: 10px; /* Add some space between the buttons */
+  flex-direction: column;
+  /* Stack buttons on smaller screens */
+  gap: 10px;
+  /* Add some space between the buttons */
 }
 
 /* Media query for larger screens */
 @media (min-width: 768px) {
   .button-container {
-    flex-direction: row; /* Display buttons in a row */
+    flex-direction: row;
+    /* Display buttons in a row */
   }
 
   .button-container button {
-    flex: 1; /* Each button takes up equal space */
-    margin: 0; /* Remove any margins that might interfere with the layout */
+    flex: 1;
+    /* Each button takes up equal space */
+    margin: 0;
+    /* Remove any margins that might interfere with the layout */
   }
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.language-switch {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.language-switch:hover {
+  background-color: #45a049;
+}

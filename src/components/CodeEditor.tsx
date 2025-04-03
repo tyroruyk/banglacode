@@ -4,6 +4,10 @@ interface Variables {
   [key: string]: number | string;
 }
 
+interface CodeEditorProps {
+  language: 'bn' | 'en';
+}
+
 const defaultCode = `#অন্তর্ভুক্ত <স্তদিও.হ>
 
 পূর্ণ প্রধান() {
@@ -49,9 +53,9 @@ const assignNumericVariable = (
   }
 };
 
-export default function CodeEditor() {
+export default function CodeEditor({ language }: CodeEditorProps) {
   const [code, setCode] = useState(defaultCode);
-  const [output, setOutput] = useState('আউটপুট এখানে দেখাবে...');
+  const [output, setOutput] = useState(language === 'bn' ? 'আউটপুট এখানে দেখাবে...' : 'Output will appear here...');
 
   const runCode = () => {
     let outputText = '';
@@ -64,14 +68,14 @@ export default function CodeEditor() {
     const includeIndex = lines.findIndex(line => line.includes('#অন্তর্ভুক্ত <স্তদিও.হ>'));
     const mainIndex = lines.findIndex(line => line.includes('পূর্ণ প্রধান()'));
     if (includeIndex === -1 || (mainIndex !== -1 && includeIndex > mainIndex)) {
-      setOutput('ত্রুটি: "#অন্তর্ভুক্ত <স্তদিও.হ>" অবশ্যই "পূর্ণ প্রধান()" ফাংশনের আগে থাকতে হবে।');
+      setOutput(language === 'bn' ? 'ত্রুটি: "#অন্তর্ভুক্ত <স্তদিও.হ>" অবশ্যই "পূর্ণ প্রধান()" ফাংশনের আগে থাকতে হবে।' : 'Error: "#অন্তর্ভুক্ত <স্তদিও.হ>" must come before "পূর্ণ প্রধান()" function.');
       return;
     }
 
     // Validate main function syntax (must start with 'পূর্ণ প্রধান()' and include an opening brace)
     const mainFunctionLine = lines.find(line => line.includes('প্রধান()'));
     if (!mainFunctionLine || !mainFunctionLine.startsWith('পূর্ণ প্রধান()') || !mainFunctionLine.includes('{')) {
-      setOutput('ত্রুটি: মূল ফাংশনের সিনট্যাক্স অবশ্যই "পূর্ণ প্রধান() {...}" হতে হবে এবং শুরুতে "{" থাকতে হবে।');
+      setOutput(language === 'bn' ? 'ত্রুটি: মূল ফাংশনের সিনট্যাক্স অবশ্যই "পূর্ণ প্রধান() {...}" হতে হবে এবং শুরুতে "{" থাকতে হবে।' : 'Error: Main function syntax must be "পূর্ণ প্রধান() {...}" and start with "{".');
       return;
     }
 
@@ -84,7 +88,7 @@ export default function CodeEditor() {
       if (braceCount === 0 && i > mainLineIndex) break;
     }
     if (braceCount !== 0) {
-      setOutput('ত্রুটি: প্রধান() ফাংশনে শেষের কার্লি ব্রেস "}" অনুপস্থিত।');
+      setOutput(language === 'bn' ? 'ত্রুটি: প্রধান() ফাংশনে শেষের কার্লি ব্রেস "}" অনুপস্থিত।' : 'Error: Missing closing curly brace "}" in main() function.');
       return;
     }
 
@@ -99,11 +103,10 @@ export default function CodeEditor() {
         !line.endsWith('{') &&
         !line.endsWith('}') &&
         !line.includes('প্রধান()') &&
-        // !line.includes('ফেরত ০') &&
         !line.endsWith(';') &&
         line !== ''
       ) {
-        setOutput(`ত্রুটি: লাইন ${i + 1} এ সেমিকোলন (;) অনুপস্থিত`);
+        setOutput(language === 'bn' ? `ত্রুটি: লাইন ${i + 1} এ সেমিকোলন (;) অনুপস্থিত` : `Error: Missing semicolon (;) in line ${i + 1}`);
         return;
       }
 
@@ -202,7 +205,7 @@ export default function CodeEditor() {
     }
 
     if (isInMain && !returnFound) {
-      setOutput('ত্রুটি: "ফেরত ০;" প্রধান() ফাংশনে অনুপস্থিত।');
+      setOutput(language === 'bn' ? 'ত্রুটি: "ফেরত ০;" প্রধান() ফাংশনে অনুপস্থিত।' : 'Error: Missing "ফেরত ০;" in main() function.');
       return;
     }
 
@@ -211,7 +214,7 @@ export default function CodeEditor() {
       outputText = outputText.replace(/NaN/g, 'নান');
     }
 
-    setOutput(outputText || 'কোনো আউটপুট নেই বা কোডে ত্রুটি আছে।');
+    setOutput(outputText || (language === 'bn' ? 'কোনো আউটপুট নেই বা কোডে ত্রুটি আছে।' : 'No output or error in code.'));
   };
 
   // Handle tab key insertion in textarea
@@ -235,13 +238,13 @@ export default function CodeEditor() {
     const shareURL = `${window.location.origin}${window.location.pathname}?q=${encodedCode}`;
     navigator.clipboard.writeText(shareURL)
       .then(() => {
-        alert('লিঙ্কটি ক্লিপবোর্ডে কপি করা হয়েছে!');
+        alert(language === 'bn' ? 'লিঙ্কটি ক্লিপবোর্ডে কপি করা হয়েছে!' : 'Link copied to clipboard!');
       })
       .catch(err => {
-        console.error('ক্লিপবোর্ডে কপি করতে সমস্যা:', err);
-        alert('লিঙ্কটি কপি করতে সমস্যা হয়েছে।');
+        console.error(language === 'bn' ? 'ক্লিপবোর্ডে কপি করতে সমস্যা:' : 'Error copying to clipboard:', err);
+        alert(language === 'bn' ? 'লিঙ্কটি কপি করতে সমস্যা হয়েছে।' : 'Error copying link.');
       });
-  }, [code]);
+  }, [code, language]);
 
   // Load code from URL parameter if available
   useEffect(() => {
@@ -259,11 +262,11 @@ export default function CodeEditor() {
         value={code}
         onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setCode(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="এখানে আপনার বাংলাকোড লিখুন..."
+        placeholder={language === 'bn' ? 'এখানে আপনার বাংলাকোড লিখুন...' : 'Write your BanglaCode here...'}
       />
       <div className="button-container">
-        <button onClick={runCode}>কোড চালান</button>
-        <button onClick={shareCode}>কোড শেয়ার করুন</button>
+        <button onClick={runCode}>{language === 'bn' ? 'কোড চালান' : 'Run Code'}</button>
+        <button onClick={shareCode}>{language === 'bn' ? 'কোড শেয়ার করুন' : 'Share Code'}</button>
       </div>
       <div id="output">{output}</div>
     </div>
