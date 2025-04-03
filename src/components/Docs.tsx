@@ -30,13 +30,15 @@ const Docs = ({ language }: DocsProps) => {
       <h4>{content.variables}</h4>
       <p>{content.variablesDesc}</p>
       <p>Example:</p>
-      <pre>
+      <span className='code'>
         <code>
-          {`পূর্ণ ক = ১০; // int a = 10;
-দশমিক খ = ৩.৫; // float b = 3.5;
-সুতা নাম = "বাংলা কোড"; // char* name = "Bangla Code";`}
+          {`পূর্ণ ক = ১০; // int a = 10;`}
+          <br />
+          {`দশমিক খ = ৩.৫; // float b = 3.5;`}
+          <br />
+          {`সুতা নাম = "বাংলা কোড"; // char* name = "Bangla Code";`}
         </code>
-      </pre>
+      </span>
       <h4>{content.functions}</h4>
       <p>{content.functionsDesc}</p>
       <ul>
@@ -49,12 +51,13 @@ const Docs = ({ language }: DocsProps) => {
       <h4>{content.output}</h4>
       <p>{content.outputDesc}</p>
       <p>Example:</p>
-      <pre>
+      <span className='code'>
         <code>
-          {`ছাপাওফ("গণনা শুরু!\\n"); // printf("Calculation started!\\n");
-ছাপাওফ(ক); // printf(a);`}
+          {`ছাপাওফ("গণনা শুরু!\\n"); // printf("Calculation started!\\n");`}
+          <br />
+          {`ছাপাওফ(ক); // printf(a);`}
         </code>
-      </pre>
+      </span>
       <h3>{content.example}</h3>
       <pre>
         <code>

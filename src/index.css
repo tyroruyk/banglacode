@@ -141,3 +141,12 @@ button:hover {
 .language-switch:hover {
   background-color: #45a049;
 }
+
+.code {
+  font-family: monospace;
+  background-color: #f4f4f4;
+  padding: 5px;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
