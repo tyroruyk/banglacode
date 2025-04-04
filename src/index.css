@@ -120,13 +120,7 @@ button:hover {
   }
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
+/* Language Switch Button styles */
 .language-switch {
   padding: 8px 16px;
   font-size: 14px;
@@ -140,6 +134,31 @@ button:hover {
 
 .language-switch:hover {
   background-color: #45a049;
+}
+
+/* GitHub Star Button styles */
+.github-star {
+  font-size: 35px;
+  color: #333;
+  text-decoration: none;
+}
+
+.github-star:hover {
+  color: #007bff;
+}
+
+/* Header layout */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .code {
