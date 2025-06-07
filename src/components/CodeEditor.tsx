@@ -64,7 +64,7 @@ export default function CodeEditor({ language }: CodeEditorProps) {
     let returnFound = false;
 
     // Check for required include before main
-    const includeIndex = lines.findIndex(line => line.includes('#অন্তর্ভুক্ত <স্তদিও.হ>'));
+    const includeIndex = lines.findIndex(line => line.includes('#অন্তর্ভুক্ত <স্তদিও.হ>') || line.includes('#অন্তর্ভুক্ত<স্তদিও.হ>'));
     const mainIndex = lines.findIndex(line => line.includes('পূর্ণ প্রধান()'));
     if (includeIndex === -1 || (mainIndex !== -1 && includeIndex > mainIndex)) {
       setOutput(language === 'bn' ? 'ত্রুটি: "#অন্তর্ভুক্ত <স্তদিও.হ>" অবশ্যই "পূর্ণ প্রধান()" ফাংশনের আগে থাকতে হবে।' : 'Error: "#অন্তর্ভুক্ত <স্তদিও.হ>" must come before "পূর্ণ প্রধান()" function.');
